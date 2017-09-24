@@ -39,14 +39,15 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
+            'enablePrettyUrl' => true, // включает ЧПУ
+            'showScriptName' => false, // показывать имя скрипта
+            'enableStrictParsing' => false, // включает жесткие взаимодействия с правилами rules
+//            'suffix'=>'.html', //
             'rules' => [
+                '<action:(about|contact|login)>' => 'site/<action>',
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
