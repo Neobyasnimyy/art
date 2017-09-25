@@ -7,10 +7,15 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+//    глобальное изменение шаблона
+//    'layout'=>'basic',
+//    глобальное изменение языка
+    'language' => 'ru',
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'P-fXG7QO2bGnb-jHXeIpbudR0GtsaHgV',
+            'baseUrl'=> '',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',

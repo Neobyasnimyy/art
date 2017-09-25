@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\About;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -121,6 +122,7 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
-        return $this->render('about');
+        $about=About::findOne(['id'=>1]);
+        return $this->render('about',compact('about'));
     }
 }

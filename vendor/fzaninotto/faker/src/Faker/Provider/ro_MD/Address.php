@@ -13,7 +13,7 @@ class Address extends \Faker\Provider\Address
         'Str.', 'B-dul.', 'Aleea', 'Calea', 'P-ța', 'Str-la'
     );
 
-    // random selection of seemingly frequently used streets and naming categories
+    // random selection of seemingly frequently used streets and naming category
     protected static $streetPlainName = array(
         // historical events
         'Eroilor', 'Independenței', 'Lenin', 'Unirii', '31 August 1989', 'Sovietului',
