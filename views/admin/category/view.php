@@ -2,12 +2,14 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\Category;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Category */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Category', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Настройки', 'url' => ['/admin']];
+$this->params['breadcrumbs'][] = ['label' => 'Категории', 'url' => ['/admin/category']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="categories-view">
@@ -15,8 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Вернутся к списку категорий', ['/admin/category'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
@@ -32,6 +35,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'genre',
             'description:ntext',
+            ['label' => 'Активность',
+                'value' =>$model->getIsActive()
+                ],
+
         ],
     ]) ?>
 

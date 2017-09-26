@@ -49,6 +49,8 @@ class ImageSearch extends Image
             'query' => $query,
         ]);
 
+        $query->with('category');
+
         $this->load($params);
 
         if (!$this->validate()) {
@@ -62,6 +64,7 @@ class ImageSearch extends Image
             'id' => $this->id,
             'id_category' => $this->id_category,
         ]);
+
 
         $query->andFilterWhere(['like', 'image_name', $this->image_name]);
 

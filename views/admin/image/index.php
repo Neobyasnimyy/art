@@ -2,12 +2,13 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\models\Category;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ImageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Image';
+$this->title = 'Изображения';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="images-index">
@@ -16,16 +17,22 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Create Image', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить изображение', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+//            ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'id_category',
+            [
+                'attribute'=>'id_category',
+                'label'=>'Категория',
+                'format'=>'text', // Возможные варианты: raw, html
+                'value'=>'category.name',
+                'filter' => Category::getCategoriesList()
+            ],
             'image_name',
 
             ['class' => 'yii\grid\ActionColumn'],

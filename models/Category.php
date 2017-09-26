@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "category".
@@ -31,8 +32,21 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['description'], 'string'],
-            [['name', 'genre'], 'string', 'max' => 255],
+            [['name', 'genre'], 'string', 'max' => 255,'tooShort' => 'Уменьшите количество символов'],
+            [['name'], 'required', 'message' => 'Поле должно быть заполненно'],
+            [['name','genre'], 'validateName'],
+            [['name','genre','description'],'trim'], // очищает от пробелов по краям
+            ['is_active', 'integer'],
+            ['is_active','required','message' => 'Поле должно быть заполненно'],
         ];
+    }
+
+    // наша созданная валидация, она будет работать на сервере уже
+    public function validateName($attribute)
+    {
+        if (preg_match('/[^(\w) | (\x7F-\xFF) | (\s)]/', $this->$attribute)) {
+            $this->addError($attribute, 'Имя может содержать только буквенные символы, знаки подчеркивания и пробелы.');
+        }
     }
 
     /**
@@ -45,6 +59,7 @@ class Category extends \yii\db\ActiveRecord
             'name' => 'Названия',
             'genre' => 'Жанр',
             'description' => 'Описание',
+            'is_active' => 'Активность',
         ];
     }
 
@@ -54,5 +69,22 @@ class Category extends \yii\db\ActiveRecord
     public function getImages()
     {
         return $this->hasMany(Image::className(), ['id_category' => 'id']);
+    }
+
+    /**
+     * @return array Categories.name
+     */
+    public static function getCategoriesList()
+    {
+        $categories = Category::find()->select(['id', 'name'])->all();
+        return ArrayHelper::map($categories, 'id', 'name');
+    }
+
+    /**
+     * @return string 'Вкл' or 'Выкл' with Categori.is_active
+     */
+    public function getIsActive()
+    {
+        return $this->is_active ? 'Вкл' : 'Выкл';
     }
 }

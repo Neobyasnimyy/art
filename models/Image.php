@@ -15,6 +15,7 @@ use Yii;
  */
 class Image extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -42,17 +43,18 @@ class Image extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'id_category' => 'Id Category',
-            'image_name' => 'Image Name',
+            'id' => '№',
+            'id_category' => 'Категория',
+            'image_name' => 'Изображение',
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdCategory()
+    public function getCategory()
     {
         return $this->hasOne(Category::className(), ['id' => 'id_category']);
     }
+
 }

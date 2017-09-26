@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
-        'method' => 'get',
+        'method' => 'post',
     ]); ?>
 
     <?= $form->field($model, 'id') ?>
@@ -22,6 +22,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'genre') ?>
 
     <?= $form->field($model, 'description') ?>
+
+    <?= $form->field($model, 'is_active') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

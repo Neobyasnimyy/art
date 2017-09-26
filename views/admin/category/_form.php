@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="categories-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['method' => 'post']); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
@@ -18,8 +18,14 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
+    <?= $form->field($model, 'is_active')->radioList([
+        '1' => 'Вкл',
+        '0' => 'Выкл',
+    ], (isset($status))?['value'=>'1']:[]) ?>
+
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::a('Вернутся к списку категорий', ['/admin/category'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Изменить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

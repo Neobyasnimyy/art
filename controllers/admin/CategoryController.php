@@ -36,7 +36,9 @@ class CategoryController extends Controller
     public function actionIndex()
     {
         $searchModel = new CategorySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $dataProvider = $searchModel->search(Yii::$app->request->post()); // Pjax
 
         return $this->render('index', [
             'searchModel' => $searchModel,
