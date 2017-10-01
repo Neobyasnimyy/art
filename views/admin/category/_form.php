@@ -25,7 +25,7 @@ use yii\widgets\ActiveForm;
 
     <div class="form-group">
         <?= Html::a('Вернутся к списку категорий', ['/admin/category'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Изменить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-success']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Изменить', ['class' =>  'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

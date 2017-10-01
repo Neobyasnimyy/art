@@ -54,6 +54,9 @@ $config = [
             ],
         ],
     ],
+    'aliases' => [
+        '@uploads' => '@app/web/uploads',
+    ],
     'params' => $params,
 ];
 

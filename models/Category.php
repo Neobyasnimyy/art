@@ -32,11 +32,14 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['description'], 'string'],
+            ['name','unique'], // должен быть уникальным в столбце
             [['name', 'genre'], 'string', 'max' => 255,'tooShort' => 'Уменьшите количество символов'],
             [['name'], 'required', 'message' => 'Поле должно быть заполненно'],
             [['name','genre'], 'validateName'],
             [['name','genre','description'],'trim'], // очищает от пробелов по краям
-            ['is_active', 'integer'],
+            ['is_active', 'integer','max'=>1,'min'=>0],
+            // Проверяет, что "deleted" - это тип данных boolean и содержит true или false
+//            ['is_active', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
             ['is_active','required','message' => 'Поле должно быть заполненно'],
         ];
     }

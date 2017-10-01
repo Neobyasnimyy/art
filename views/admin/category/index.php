@@ -16,6 +16,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
+    <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <?php echo Yii::$app->session->getFlash('success'); ?>
+        </div>
+    <?php endif; ?>
+
     <p>
         <?= Html::a('Добавить категорию', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
@@ -38,7 +45,27 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'genre',
                 'headerOptions' => ['width' => '200'],
             ],
-            'description:ntext',
+
+            [
+                'attribute' => 'description',
+                'contentOptions' => ['class' => 'cell_class', 'style' => [
+
+                ]],
+                'content' => function ($data) {
+                    $text=Html::encode($data->description);
+                    if (strlen($text)>200){
+                        return Html::tag('div', substr($text,0,200).'...', ['class' => ['div_class'], 'style' => [
+                            // свойства каждого div
+                        ]]);
+                    }else{
+                        return Html::tag('div', Html::encode($data->description), ['class' => ['div_class'], 'style' => [
+                            // свойства каждого div
+                        ]]);
+                    }
+
+                },
+
+            ],
             [
                 'attribute' => 'is_active',
                 'value' => 'isActive',

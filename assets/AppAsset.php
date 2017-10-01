@@ -21,9 +21,12 @@ class AppAsset extends AssetBundle
         'css/site.css',
     ];
     public $js = [
+        'js/bootstrap-filestyle.min.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
+//        'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
     ];
+    public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 }

@@ -68,6 +68,7 @@ class CategoryController extends Controller
         $model = new Category();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            mkdir(Yii::getAlias('@app').'/web/uploads/images/'.$model->id, 0775, true);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -104,7 +105,8 @@ class CategoryController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        myDelete(Yii::getAlias('@app').'/web/uploads/images/'.$id);
+        Yii::$app->session->setFlash('success','Данные успешно удалены'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
         return $this->redirect(['index']);
     }
 

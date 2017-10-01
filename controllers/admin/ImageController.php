@@ -5,9 +5,12 @@ namespace app\controllers\admin;
 use Yii;
 use app\models\Image;
 use app\models\ImageSearch;
+use app\models\Category;
+use app\models\UploadImage;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * ImageController implements the CRUD actions for images model.
@@ -36,11 +39,19 @@ class ImageController extends Controller
     public function actionIndex()
     {
         $searchModel = new ImageSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $categoryList = Category::getCategoriesList();
+        $categoryList=[''=>'Все']+$categoryList;
+
+//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $dataProvider = $searchModel->search(Yii::$app->request->post()); // Pjax
+
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'categoryList' => $categoryList,
         ]);
     }
 
@@ -63,16 +74,28 @@ class ImageController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Image();
+        $modelImage = new Image();
+        $uploadImage = new UploadImage;
+        $categoryList = Category::getCategoriesList();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($modelImage->load(Yii::$app->request->post())) { //
+            $uploadImage->image = UploadedFile::getInstance($uploadImage, 'image');
+            $uploadImage->upload($modelImage->id_category); // этот метот сохраняет изображение в папке с id категории и занимается валидацией
+
+            $modelImage->image_path = $uploadImage->image->name;
+            $modelImage->save();
+
+            Yii::$app->session->setFlash('success', 'Данные приняты'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
+            return $this->redirect(['update', 'id' => $modelImage->id]);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                'modelImage' => $modelImage,
+                'categoryList' => $categoryList,
+                'uploadImage' => $uploadImage,
             ]);
         }
     }
+
 
     /**
      * Updates an existing images model.
@@ -82,13 +105,19 @@ class ImageController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $modelImage = $this->findModel($id);
+        $uploadImage = new UploadImage;
+        $categoryList = Category::getCategoriesList();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($modelImage->load(Yii::$app->request->post()) && $modelImage->save()) {
+            Yii::$app->session->setFlash('success', 'Данные приняты'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
+//            return $this->redirect(['update', 'id' => $modelImage->id]);
+            return $this->redirect(Yii::$app->request->referrer); // перенаправляет на страницу с которой пришли
         } else {
             return $this->render('update', [
-                'model' => $model,
+                'modelImage' => $modelImage,
+                'categoryList' => $categoryList,
+                'uploadImage' => $uploadImage,
             ]);
         }
     }
@@ -101,8 +130,10 @@ class ImageController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $item = $this->findModel($id);
+        myDelete(Yii::getAlias('@uploads') . '/images/' . $item->id_category . '/' . $item->image_path); // удаляем изображение с сервера
+        $item->delete();  // удаляем запись из базы данных
+        Yii::$app->session->setFlash('success', 'Удаление прошло успешно'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
         return $this->redirect(['index']);
     }
 

@@ -19,7 +19,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id_category') ?>
 
-    <?= $form->field($model, 'image_name') ?>
+    <?= $form->field($model, 'image_path') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

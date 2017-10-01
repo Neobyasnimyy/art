@@ -19,10 +19,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Вернутся к списку категорий', ['/admin/category'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить изображение', ['/admin/image/create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => 'Вы уверены, что хотите удалить категорию?',
                 'method' => 'post',
             ],
         ]) ?>

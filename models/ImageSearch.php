@@ -19,7 +19,7 @@ class ImageSearch extends Image
     {
         return [
             [['id', 'id_category'], 'integer'],
-            [['image_name'], 'safe'],
+            [['image_path'], 'safe'],
         ];
     }
 
@@ -47,10 +47,15 @@ class ImageSearch extends Image
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 3,
+            ],
         ]);
 
         $query->with('category');
-
+        if(isset($params['id_category']) and $params['id_category']===0){
+            $params['id_category']='';
+        }
         $this->load($params);
 
         if (!$this->validate()) {
@@ -66,7 +71,7 @@ class ImageSearch extends Image
         ]);
 
 
-        $query->andFilterWhere(['like', 'image_name', $this->image_name]);
+        $query->andFilterWhere(['like', 'image_path', $this->image_path]);
 
         return $dataProvider;
     }
