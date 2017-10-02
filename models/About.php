@@ -14,7 +14,7 @@ use Yii;
 class About extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * @return string tableName
      */
     public static function tableName()
     {
@@ -22,7 +22,7 @@ class About extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
     public function rules()
     {
@@ -33,7 +33,7 @@ class About extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
     public function attributeLabels()
     {

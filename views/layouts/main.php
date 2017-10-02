@@ -44,12 +44,15 @@ AppAsset::register($this);
             ['label' => 'Музыка', 'url' => ['/site/contact']],
             ['label' => 'Галерея', 'url' => ['/site/contact']],
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+                ['label' => 'Login', 'url' => ['/admin']]
             ) : (
                 '<li>'
+                . Html::a(' Настройки', ['/admin' ], ['class' => ''])
+                .'</li>'
+                .'<li>'
                 . Html::beginForm(['/site/logout'], 'post')
                 . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
+                     Yii::$app->user->identity->username . '(Выйти)',
                     ['class' => 'btn btn-link logout']
                 )
                 . Html::endForm()

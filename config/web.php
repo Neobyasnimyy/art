@@ -11,6 +11,13 @@ $config = [
 //    'layout'=>'basic',
 //    глобальное изменение языка
     'language' => 'ru',
+    'defaultRoute'=>'site/index',
+    'modules' => [
+        'admin' => [
+            'class' => 'app\modules\admin\Module',
+            'layout' =>'admin',
+        ],
+    ],
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -22,7 +29,8 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => true, // авторизация пользователя на основе куки,при запоминании пользователя
+            //'loginUrl' =>'cart/view', // куда будет отправлент пользователь если он авторизован
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

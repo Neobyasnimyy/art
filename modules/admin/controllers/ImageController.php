@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers\admin;
+namespace app\modules\admin\controllers;
 
 use Yii;
 use app\models\Image;

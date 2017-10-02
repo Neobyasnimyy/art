@@ -34,7 +34,11 @@ class UploadImage extends Model
         ];
     }
 
-    // этот метот сохраняет изображение в папке с id категории и занимается валидацией
+    /**
+     * этот метот сохраняет изображение в папке с id категории и занимается валидацией
+     * @param $idCategory
+     * @return bool
+     */
     public function upload($idCategory)
     {
         if ($this->validate() and isset($idCategory)) {
