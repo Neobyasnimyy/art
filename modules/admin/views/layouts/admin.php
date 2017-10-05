@@ -42,7 +42,7 @@ AppAsset::register($this);
                 ['label' => 'Музыка', 'url' => ['/site/contact']],
                 ['label' => 'Галерея', 'url' => ['/site/contact']],
                 Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+                ['label' => 'Войти', 'url' => ['/site/login']]
                 ) : (
                     '<li>'
                     . Html::beginForm(['/site/logout'], 'post')

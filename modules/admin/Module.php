@@ -2,6 +2,7 @@
 
 namespace app\modules\admin;
 
+use Yii;
 use yii\filters\AccessControl;
 
 /**

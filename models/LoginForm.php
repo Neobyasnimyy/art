@@ -48,11 +48,11 @@ class LoginForm extends Model
 
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
-            // password is validated by validatePassword()
 
+            // password is validated by validatePassword()
             ['password', 'validatePassword'],
-            [['password'], 'string', 'max' => 20,'tooShort' => 'Пароль слишком длинный'],
-            [['password'], 'string', 'min' => 6,'tooShort' => 'Пароль слишком короткий'],
+//            [['password'], 'string', 'max' => 30,'tooShort' => 'Пароль слишком длинный'],
+//            [['password'], 'string', 'min' => 6,'tooShort' => 'Пароль слишком короткий'],
 
             // атрибут email указывает, что в переменной email должен быть корректный адрес электронной почты
             ['email', 'email'],

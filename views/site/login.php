@@ -13,6 +13,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="site-login">
     <h1><?php echo Html::encode($this->title) ?></h1>
 
+    <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <?php echo Yii::$app->session->getFlash('success'); ?>
+        </div>
+    <?php endif; ?>
+
     <!--    <p>Введите данные для входа</p>-->
 
     <?php $form = ActiveForm::begin([

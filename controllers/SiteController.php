@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\About;
+use app\models\RegisterForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -10,6 +11,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\User;
+use yii\helpers\Url;
 
 class SiteController extends Controller
 {
@@ -65,6 +68,28 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+    /**
+     * Register action
+     *
+     * @return string|Response
+     */
+    public function actionRegister(){
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+        $model = new RegisterForm();
+        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+            $user = new User();
+            $user->username = $model->username;
+            $user->email = $model->email;
+            $user->password = \Yii::$app->security->generatePasswordHash($model->password);
+            if($user->save()){
+                Yii::$app->session->setFlash('success','Регистрация прошла успешно'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
+                return Yii::$app->response->redirect(Url::to('/admin'));
+            }
+        }
+        return $this->render('register', compact('model'));
+    }
     /**
      * Login action.
      *

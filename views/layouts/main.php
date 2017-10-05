@@ -44,7 +44,12 @@ AppAsset::register($this);
             ['label' => 'Музыка', 'url' => ['/site/contact']],
             ['label' => 'Галерея', 'url' => ['/site/contact']],
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/admin']]
+                 '<li>'
+                . Html::a(' Вход', ['/admin' ], ['class' => ''])
+                .'</li>'
+                .'<li>'
+                . Html::a(' Регистрация', ['/site/register' ], ['class' => ''])
+                .'</li>'
             ) : (
                 '<li>'
                 . Html::a(' Настройки', ['/admin' ], ['class' => ''])

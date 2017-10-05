@@ -7,7 +7,6 @@ use app\models\Image;
 use app\models\ImageSearch;
 use app\models\Category;
 use app\models\UploadImage;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;

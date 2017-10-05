@@ -17,6 +17,7 @@ class UploadImage extends Model
             [['image'],
                 'file',
                 'extensions' => 'png, jpg, gif, bmp',
+                'skipOnEmpty' => false, // обязательная загрузка файла
                 'maxSize' => 1024 * 1024 * 3,
                 'tooBig' => "Файл «{file}» слишком большой. Размер не должен превышать 3 MB.",
                 'mimeTypes' => ['image/gif','image/jpeg','image/png']

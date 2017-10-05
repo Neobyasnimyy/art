@@ -29,7 +29,7 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true, // авторизация пользователя на основе куки,при запоминании пользователя
+            'enableAutoLogin' => true, // авторизация пользователя на основе куки,при login пользователя
             //'loginUrl' =>'cart/view', // куда будет отправлент пользователь если он авторизован
         ],
         'errorHandler' => [
@@ -58,7 +58,7 @@ $config = [
             'enableStrictParsing' => false, // включает жесткие взаимодействия с правилами rules
 //            'suffix'=>'.html', //
             'rules' => [
-                '<action:(about|contact|login)>' => 'site/<action>',
+                '<action:(about|contact|login|register)>' => 'site/<action>',
             ],
         ],
     ],

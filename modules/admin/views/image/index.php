@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Картинка',
                 'format' => 'raw',
                 'value' => function ($data) {
-                    return Html::img(Url::toRoute($data->imagePath), [
+                    return Html::img('/'.$data->imagePath, [
                         'alt' => 'Изображение отсутствует',
                         'style' => 'width:150px;'
                     ]);
