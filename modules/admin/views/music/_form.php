@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
             'enctype' => 'multipart/form-data',
 //            'class' => 'col-md-4'
         ],
-        'class' => 'fff',
+//        'class' => 'fff',
     ]); ?>
 
     <?= $form->field($modelMusic, 'name')->textInput(['enableAjaxValidation' => true, 'maxlength' => true, 'style' => 'width:300px']) ?>

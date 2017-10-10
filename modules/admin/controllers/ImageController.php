@@ -74,17 +74,17 @@ class ImageController extends AppAdminController
         ]);
     }
 
-    /**
-     * Displays a single images model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+//    /**
+//     * Displays a single images model.
+//     * @param integer $id
+//     * @return mixed
+//     */
+//    public function actionView($id)
+//    {
+//        return $this->render('view', [
+//            'model' => $this->findModel($id),
+//        ]);
+//    }
 
     /**
      * Creates a new images model.

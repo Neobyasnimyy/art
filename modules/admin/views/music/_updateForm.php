@@ -13,26 +13,30 @@ use yii\widgets\ActiveForm;
 
 <div class="_div_updateForm">
 
-<?php $form = ActiveForm::begin([
-    'id' => "music-form-{$modelMusic->id}",
-    'action' => ['update'],
+    <?php $form = ActiveForm::begin([
+        'id' => "music-form-{$modelMusic->id}",
+        'action' => ['update'],
 //    'enableAjaxValidation' => true,
-    'enableClientValidation' => true, // проверка на стороне клиента полностью,
+        'enableClientValidation' => true, // проверка на стороне клиента полностью,
 //    'validationUrl' => ['ajax-validate-name'],
-    'method' => 'post',
-    'options' => [
-        'class'=>'_updateForm',
-    ],
-]); ?>
+        'method' => 'post',
+        'options' => [
+            'class' => '_updateForm',
+        ],
+    ]); ?>
 
 
-<?= $form->field($modelMusic, 'name')->textInput(['enableAjaxValidation' => true, 'maxlength' => true])->label(false); ?>
+    <?= $form->field($modelMusic, 'name')->textInput([
+        'enableAjaxValidation' => true,
+        'maxlength' => true,
+        'style' => 'background-color: #eee;'
+    ])->label(false); ?>
 
-<?= $form->field($modelMusic, 'id')->label(false)->hiddenInput(); ?>
+    <?= $form->field($modelMusic, 'id')->label(false)->hiddenInput(); ?>
 
-<?php //echo Html::submitButton('Сохранить', ['class' => 'btn btn-success ', 'style' => 'display:none;']); ?>
+    <?php //echo Html::submitButton('Сохранить', ['class' => 'btn btn-success ', 'style' => 'display:none;']); ?>
 
-<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>
 
