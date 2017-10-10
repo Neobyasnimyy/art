@@ -2,28 +2,10 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-
 use yii\widgets\ActiveForm;
 
-//начало многосточной строки, можно использовать любые кавычки
-$script = <<< JS
-    $('#openFormNewMusic').click(function () {
-        $('#addMusic').toggle(); //тогл это переключатель, если display block он сделает none  и наоборот
-    });
-        
-    
-JS;
-//маркер конца строки, обязательно сразу, без пробелов и табуляции
-$this->registerJs($script, yii\web\View::POS_READY);
-
-//при изменении названиия файла, запичываем в базу данных
-$js = <<< JS
-    $('.music-name-edit input[name="Music[name]"]').blur(function () {
-         $(this).parents('form').find('button').click();
-    });
-JS;
-//маркер конца строки, обязательно сразу, без пробелов и табуляции
-$this->registerJs($js, yii\web\View::POS_READY);
+$this->registerJsFile('/js/admin/adminMusicIndex.js',
+    ['depends' => [\yii\web\JqueryAsset::className()]]);
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\MusicSearch */
@@ -42,7 +24,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= Html::submitButton('Добавить Композицию', ['id' => 'openFormNewMusic', 'class' => 'btn btn-primary']) ?>
 
@@ -53,44 +34,13 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </div>
 
-    <?= GridView::widget([
+
+    <?= $this->render('_gridView', [
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
+        'searchModel' => $searchModel,
+    ]) ?>
 
-            'id',
-            'file_name',
-//            'name',
-            [
-                'attribute' => 'name',
-                'format' => 'raw',
-//                'contentOptions' => ['style' => 'background-color:red; height:50px;'],
-                'value'=>function($data){
-                    return $this->render('_updateForm', [
-                        'modelMusic' => $data,
-                    ]);
-                }
 
-            ],
-            [
-//                'attribute' => 'name',
-//                'headerOptions' => ['width' => '160'],
-                'label' => 'Прослушать',
-                'format' => 'raw',
-                'value' => function ($data) {
-                    return "<audio controls>
-                              <source src='/web/uploads/music/{$data->file_name}' type='{$data->type}'>
-                            Ваш браузер не поддерживает аудио элемент.
-                            </audio>";
-                },
-            ],
-            'type',
 
-            ['class' => 'yii\grid\ActionColumn',
-//                'header' => 'Действия',
-                'template' => '{delete}',
 
-            ],
-        ],
-    ]); ?>
 </div>

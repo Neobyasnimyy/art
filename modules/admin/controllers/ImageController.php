@@ -26,6 +26,7 @@ class ImageController extends AppAdminController
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'update' => ['POST'],
                 ],
             ],
         ];
@@ -38,19 +39,38 @@ class ImageController extends AppAdminController
     public function actionIndex()
     {
         $searchModel = new ImageSearch();
-
+        $modelImage = new Image();
+        $uploadImage = new UploadImage();
         $categoryList = Category::getCategoriesList();
-        $categoryList=[''=>'Все']+$categoryList;
+        $categoryListForFilter = ['' => 'Все'] + $categoryList;
+        $dataProvider = $searchModel->search([]);
+        $openForm = false;
 
-//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams); // Get
 
-        $dataProvider = $searchModel->search(Yii::$app->request->post()); // Pjax
+        // обработка для filter-GridView через pjax
+        if (Yii::$app->request->isPost) {
+//
+            if (Yii::$app->request->post('ImageSearch') == true) {
 
+                $dataProvider = $searchModel->search(Yii::$app->request->post()); // Pjax
+                return $this->renderAjax('_gridView', [
+                    'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'categoryListForFilter' => $categoryListForFilter,
+                    'categoryList' => $categoryList,
+                ]);
+            }
+        }
 
         return $this->render('index', [
+            'modelImage' => $modelImage,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'categoryList' => $categoryList,
+            'categoryListForFilter' => $categoryListForFilter,
+            'openForm' => $openForm,
+            'uploadImage' => $uploadImage,
         ]);
     }
 
@@ -71,24 +91,38 @@ class ImageController extends AppAdminController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($category=null)
+    public function actionCreate($category = null)
     {
         $modelImage = new Image();
-        $uploadImage = new UploadImage;
+        $uploadImage = new UploadImage();
         $categoryList = Category::getCategoriesList();
+        $categoryListForFilter = ['' => 'Все'] + $categoryList;
+        $searchModel = new ImageSearch();
 
         if ($modelImage->load(Yii::$app->request->post())) { //
             $uploadImage->image = UploadedFile::getInstance($uploadImage, 'image');
-            $uploadImage->upload($modelImage->id_category); // этот метот сохраняет изображение в папке с id категории и занимается валидацией
 
-            $modelImage->image_path = $uploadImage->image->name;
-            $modelImage->save();
+//             этот метот сохраняет изображение в папке с id категории и занимается валидацией
+            if ($uploadImage->upload($modelImage->id_category)) {
+                $modelImage->image_path = $uploadImage->newName();
+                $modelImage->save();
+                Yii::$app->session->setFlash('success', 'Данные приняты'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
+                return $this->redirect(['/admin/image']);
+            }
+            Yii::$app->session->setFlash('danger', 'Ошибка записи');
+            return $this->render('index', [
+                'modelImage' => $modelImage,
+                'searchModel' => $searchModel,
+                'dataProvider' => $searchModel->search([]),
+                'categoryList' => $categoryList,
+                'uploadImage' => $uploadImage,
+                'openForm' => true,
+                'categoryListForFilter' => $categoryListForFilter,
+            ]);
 
-            Yii::$app->session->setFlash('success', 'Данные приняты'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
-            return $this->redirect(['update', 'id' => $modelImage->id]);
         } else {
-            if (!$category==null){
-                $modelImage->id_category=$category;
+            if (!$category == null) {
+                $modelImage->id_category = $category;
             }
             return $this->render('create', [
                 'modelImage' => $modelImage,
@@ -101,27 +135,39 @@ class ImageController extends AppAdminController
 
     /**
      * Updates an existing images model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
-        $modelImage = $this->findModel($id);
-        $uploadImage = new UploadImage;
+
+        $modelImage = new Image();
         $categoryList = Category::getCategoriesList();
 
-        if ($modelImage->load(Yii::$app->request->post()) && $modelImage->save()) {
-            Yii::$app->session->setFlash('success', 'Данные приняты'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
-//            return $this->redirect(['update', 'id' => $modelImage->id]);
-            return $this->redirect(Yii::$app->request->referrer); // перенаправляет на страницу с которой пришли
-        } else {
-            return $this->render('update', [
+        if (Yii::$app->request->isAjax && $modelImage->load(Yii::$app->request->post())) {
+            $model = Image::findOne($modelImage->id);
+
+            // обновляет категорию если она изменилась
+            if (($modelImage->id_category != $model->id_category)) {
+                $old_path = Yii::getAlias('@uploads') . '/images/' . $model->id_category . '/' . $model->image_path;
+                $new_path = Yii::getAlias('@uploads') . '/images/' . $modelImage->id_category . '/' . $model->image_path;
+
+                if (rename($old_path, $new_path)) { // если перемещение прошло успешно, перезаписываем в базе
+                    $model->id_category = $modelImage->id_category;
+                    $model->update();
+                } else {
+                    $modelImage->addError('id_category', 'ошибка записи');
+                }
+            }
+        }
+        // если был ajax запрос то возвращаем форму
+        if (Yii::$app->request->isAjax) {
+            return $this->renderPartial('_updateForm', [
                 'modelImage' => $modelImage,
                 'categoryList' => $categoryList,
-                'uploadImage' => $uploadImage,
-            ]);
+            ], false, true);
         }
+        // если был post просто пост запрос то редирект
+        return $this->redirect(['/admin/image']);
     }
 
     /**
@@ -136,7 +182,7 @@ class ImageController extends AppAdminController
         myDelete(Yii::getAlias('@uploads') . '/images/' . $item->id_category . '/' . $item->image_path); // удаляем изображение с сервера
         $item->delete();  // удаляем запись из базы данных
         Yii::$app->session->setFlash('success', 'Удаление прошло успешно'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
-        return $this->redirect(['index']);
+        return $this->redirect(['/admin/image']);
     }
 
     /**

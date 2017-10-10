@@ -82,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'addImage' => function ($url,$model,$key) {
                         return Html::a(
                             '<span class="glyphicon glyphicon-plus"><span class="glyphicon glyphicon-picture"></span></span>',
-                            Url::toRoute(['admin/image/create', 'category' => $key]));
+                            Url::toRoute(['image/create', 'category' => $key]));
                     },
                 ],
             ],

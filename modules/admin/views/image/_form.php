@@ -9,61 +9,49 @@ use yii\helpers\Url;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="images-form">
-
-    <?php $form = ActiveForm::begin([
-        'id' => 'image-form',
-        'enableClientValidation' => true, // проверка на стороне клиента полностью,
-        'method' => 'post',
-        'options' => ['enctype' => 'multipart/form-data'],
-    ]); ?>
-
-    <?php
-
-    $params = [
-        'prompt' => 'Укажите категорию'
-    ];
-    echo $form->field($modelImage, 'id_category')->dropDownList($categoryList, $params); ?>
-
-    <?php
-    if (isset($modelImage->image_path) and isset($modelImage->id_category)) {
-        echo Html::img(Url::toRoute($modelImage->imagePath), [
-            'alt' => 'Изображение отсутствует',
-            'style' => 'width:300px;',
-            'class' => 'img-responsive center-block img-thumbnail',
-        ]);
-        echo $form->field($uploadImage, 'image')->fileInput([
-            'class' => 'filestyle',
-            'data-buttonText' => ' Заменить...',
-            'data-buttonName' => "btn-primary",
-            'data-placeholder' => $modelImage->image_path,
-        ]);
-    } else {
-        echo $form->field($uploadImage, 'image')->fileInput([
-            'class' => 'filestyle',
-            'data-buttonText' => 'Выберите изображение',
-            'data-buttonName' => "btn-primary",
-            'data-placeholder' => "Файла нет",
-            'required'=>true,
-        ]);
-    }
-    ?>
+<?php
+//$this->registerJs(
+//    '$("document").ready(function(){
+//            $("#addImagePjax").on("pjax:end", function() {
+//            console.log("bybe");
+////            $.pjax.reload({container:"#notes"});  //Reload GridView
+//        });
+//    });'
+//);
+?>
 
 
-    <div class="form-group">
-        <?= Html::a('Вернутся к списку изображений', ['/admin/image'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::submitButton($modelImage->isNewRecord ? 'Добавить' : 'Изменить', ['class' => 'btn btn-success pull-right']) ?>
-        <?php if (isset($modelImage->image_path)) {
-            echo Html::a('Delete', ['delete', 'id' => $modelImage->id], [
-                'class' => 'btn btn-danger pull-right',
-                'data' => [
-                    'confirm' => 'Вы уверены, что хотите удалить изображение?',
-                    'method' => 'post',
-                ],
-            ]);
-        } ?>
-    </div>
 
-    <?php ActiveForm::end(); ?>
+<?php $form = ActiveForm::begin([
+    'id' => 'image-form',
+    'enableClientValidation' => true, // проверка на стороне клиента полностью,
+    'method' => 'post',
+    'action'=>['create'],
+    'options' => ['enctype' => 'multipart/form-data'],
+]); ?>
 
-</div>
+<?php
+
+$params = [
+    'prompt' => 'Укажите категорию'
+];
+echo $form->field($modelImage, 'id_category')->dropDownList($categoryList, $params); ?>
+
+<?php
+
+echo $form->field($uploadImage, 'image')->fileInput([
+    'class' => 'filestyle',
+    'data-buttonText' => 'Выберите изображение',
+    'data-buttonName' => "btn-primary",
+    'data-placeholder' => "Файла нет",
+    'required' => true,
+]);
+?>
+
+
+<?= Html::submitButton('Добавить', ['class' => 'btn btn-success pull-right']) ?>
+
+
+<?php ActiveForm::end(); ?>
+
+

@@ -21,7 +21,16 @@ class MusicSearch extends Music
             //[['id'], 'integer'],
             [['name','file_name'],'trim'],
             [['name','file_name'], 'string', 'max' => 255, 'tooShort' => 'Уменьшите количество символов'],
+            [['name','file_name'],'validateName'],
         ];
+    }
+
+    // наша созданная валидация, она будет работать на сервере уже
+    public function validateName($attribute)
+    {
+        if (preg_match('/[^(\w) | (\x7F-\xFF) | (\s)]/', $this->$attribute)) {
+            $this->addError($attribute, 'Имя может содержать только буквенные символы, знаки подчеркивания, пробелы, скобки.');
+        }
     }
 
     /**
@@ -48,6 +57,9 @@ class MusicSearch extends Music
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 3,
+            ],
         ]);
 
         $this->load($params);

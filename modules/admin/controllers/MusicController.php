@@ -27,6 +27,8 @@ class MusicController extends AppAdminController
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
+                    'update'=>['Post'],
+                    'PjaxIndex' => ['POST'],
                     'delete' => ['POST'],
                 ],
             ],
@@ -42,14 +44,22 @@ class MusicController extends AppAdminController
         $searchModel = new MusicSearch();
         $modelMusic = new Music();
         $uploadMusic = new UploadMusic();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->post());
         $openForm = false;
 
-        if (Yii::$app->request->isAjax && $modelMusic->Load(Yii::$app->request->post())) {
+        if (Yii::$app->request->isAjax && Yii::$app->request->post('ajax', 'music-form') && $modelMusic->Load(Yii::$app->request->post())) {
             Yii::$app->response->format = 'json';
             return ActiveForm::validate($modelMusic);
         }
+//        if (Yii::$app->request->isAjax && Yii::$app->request->post('_pjax')) {
+//            $dataProvider = $searchModel->search(Yii::$app->request->post());
+//            return $this->render('_gridView', [
+//                'searchModel' => $searchModel,
+//                'dataProvider' => $dataProvider,
+//            ]);
+//        }
 
+        // добавление музыки
         if ($modelMusic->load(Yii::$app->request->post()) and $modelMusic->validate(['name'])) {
             $uploadMusic->file = UploadedFile::getInstance($uploadMusic, 'file');
             $newFileName = translit($modelMusic->name);
@@ -59,7 +69,7 @@ class MusicController extends AppAdminController
             $modelMusic->type = $uploadMusic->file->type;
             if ($modelMusic->save()) {
                 Yii::$app->session->setFlash('success', 'Данные сохранены'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
-                return $this->redirect(['index']);
+                return $this->redirect(['/admin/music']);
             }
 //            return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -76,29 +86,53 @@ class MusicController extends AppAdminController
         ]);
     }
 
+    // action для GridViewMusic pjax для страницы индекс
+    public function actionPjaxIndex()
+    {
+        $searchModel = new MusicSearch();
+
+        $dataProvider = $searchModel->search([]);
+
+        if (Yii::$app->request->isPjax or Yii::$app->request->post()) {
+            $dataProvider = $searchModel->search(Yii::$app->request->post());
+        } else {
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        }
+
+        return $this->render('_gridView', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            ]);
+
+    }
 
     /**
      * Updates an existing Music model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param string $id
+     *
      * @return mixed
      */
     public function actionUpdate()
     {
         $modelMusic = new Music();
-
-        if (Yii::$app->request->isAjax && $modelMusic->load(Yii::$app->request->post())) {
-
+//
+        if (Yii::$app->request->isAjax
+            && Yii::$app->request->post('Music')
+            && $modelMusic->load(Yii::$app->request->post())
+        ) {
             $model = Music::findOne($modelMusic->id);
             // обновляет имя если оно изменилось
-            if (($modelMusic->name != $model->name)) {
+            if (($modelMusic->validate(['name','id']) && ($modelMusic->name != $model->name))) {
                 $model->name = $modelMusic->name;
+
                 $model->update();
             }
-            return $this->render('_updateForm', [
+            return $this->renderPartial('_updateForm', [
                 'modelMusic' => $modelMusic,
-            ]);
+            ], false, true);
         }
+
+        // если был post просто пост запрос то редирект
+        return $this->redirect(['/admin/music']);
     }
 
     public function actionAjaxValidateName()

@@ -30,6 +30,7 @@ class Image extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['id'], 'integer'],
             [['id_category'], 'integer'],
             [['image_path'], 'required'],
 //            ['image_path', 'string', 'max' => 255],
@@ -50,7 +51,7 @@ class Image extends \yii\db\ActiveRecord
         return [
             'id' => '№',
             'id_category' => 'Категория',
-            'image_path' => 'Путь к изображению',
+            'image_path' => 'Имя файла',
         ];
     }
 

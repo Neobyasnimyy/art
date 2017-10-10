@@ -20,7 +20,7 @@ class UploadImage extends Model
                 'skipOnEmpty' => false, // обязательная загрузка файла
                 'maxSize' => 1024 * 1024 * 3,
                 'tooBig' => "Файл «{file}» слишком большой. Размер не должен превышать 3 MB.",
-                'mimeTypes' => ['image/gif','image/jpeg','image/png']
+                'mimeTypes' => ['image/gif', 'image/jpeg', 'image/png']
             ],
         ];
     }
@@ -43,10 +43,26 @@ class UploadImage extends Model
     public function upload($idCategory)
     {
         if ($this->validate() and isset($idCategory)) {
-            $this->image->saveAs(Yii::getAlias('@uploads')."/images/{$idCategory}/{$this->image->baseName}.{$this->image->extension}");
+            $this->image->saveAs(Yii::getAlias('@uploads')
+                . "/images/{$idCategory}/{$this->image->baseName}-"
+                . date('YmdHi', time()) . ".{$this->image->extension}");
+            return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * добавляем к имени дату и время
+     * для того чтобы можно было добавлять одинаковые картинки
+     * @return string
+     */
+    public function newName()
+    {
+        $str = $this->image->name;
+        $spos = strrpos($str, '.');
+        $newName = substr($str, 0, $spos) .rand(0,9999). date('YmdHi', time()) . substr($str, $spos);
+        return $newName;
     }
 
 }
