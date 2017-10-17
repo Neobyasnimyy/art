@@ -6,13 +6,13 @@ use yii\helpers\Url;
 
 <?php \yii\widgets\Pjax::begin(['id' => 'GridViewMusic',
     'timeout' => 5000,
-    'enablePushState' => false,
-    'clientOptions' => ['method' => 'Post']]); ?>
+    'enablePushState' => true,
+    'clientOptions' => ['method' => 'Get']]); ?>
 
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-    'filterUrl'=> ['pjax-index'],
+    'filterUrl'=> ['index'],
 
     'columns' => [
 

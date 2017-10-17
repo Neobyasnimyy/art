@@ -2,7 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
+use vova07\imperavi\Widget;
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model app\models\Category */
 /* @var $form yii\widgets\ActiveForm */
@@ -16,12 +17,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'genre')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'is_active')->radioList([
-        '1' => 'Вкл',
-        '0' => 'Выкл',
-    ], (isset($status))?['value'=>'1']:[]) ?>
+    <?php echo $form->field($model, 'description')->widget(Widget::className(), [
+        'settings' => [
+            'lang' => 'ru',
+            'minHeight' => 200,
+            'plugins' => [
+                'clips',
+                'fullscreen'
+            ],
+        ]
+    ]);?>
+    <?= $form->field($model, 'is_active')->dropDownList(\app\models\Category::getStatusList(), (isset($status))?['value'=>'1']:[]) ?>
 
     <div class="form-group">
         <?= Html::a('Вернутся к списку категорий', ['/admin/category'], ['class' => 'btn btn-primary']) ?>

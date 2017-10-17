@@ -22,36 +22,35 @@ use yii\helpers\Url;
 
 
 
-<?php $form = ActiveForm::begin([
-    'id' => 'image-form',
-    'enableClientValidation' => true, // проверка на стороне клиента полностью,
-    'method' => 'post',
-    'action'=>['create'],
-    'options' => ['enctype' => 'multipart/form-data'],
-]); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'image-form',
+        'enableClientValidation' => true, // проверка на стороне клиента полностью,
+        'method' => 'post',
+        'action' => ['create'],
+        'options' => ['enctype' => 'multipart/form-data'],
+    ]); ?>
 
-<?php
-
-$params = [
-    'prompt' => 'Укажите категорию'
-];
-echo $form->field($modelImage, 'id_category')->dropDownList($categoryList, $params); ?>
-
-<?php
-
-echo $form->field($uploadImage, 'image')->fileInput([
-    'class' => 'filestyle',
-    'data-buttonText' => 'Выберите изображение',
-    'data-buttonName' => "btn-primary",
-    'data-placeholder' => "Файла нет",
-    'required' => true,
-]);
-?>
+    <?php
+    $params = [
+        'prompt' => 'Укажите категорию'
+    ];
+    echo $form->field($modelImage, 'id_category')->dropDownList($categoryList, $params); ?>
 
 
-<?= Html::submitButton('Добавить', ['class' => 'btn btn-success pull-right']) ?>
+    <?php
+    echo $form->field($uploadImage, 'image')->fileInput([
+        'class' => 'filestyle',
+        'data-buttonText' => 'Выберите изображение',
+        'data-buttonName' => "btn-primary",
+        'data-placeholder' => "Файла нет",
+        'required' => true,
+    ]);?>
+
+    <div class="form-group text-right">
+    <?= Html::submitButton('Добавить', ['class' => 'btn btn-success']) ?>
+    </div>
 
 
-<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 

@@ -3,19 +3,19 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Article */
+/* @var $model app\models\Category */
 
-$this->title = 'Update Article: ' . $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Articles', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = $modelArticle->title;
+
 ?>
 <div class="article-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?= Html::a('Вернутся к списку статей', ['/admin/article'], ['class' => 'btn btn-primary text-left']) ?>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
-        'model' => $model,
+        'modelArticle' => $modelArticle,
+        'uploadImageArticle' =>$uploadImageArticle,
     ]) ?>
 
 </div>

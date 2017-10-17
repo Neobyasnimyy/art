@@ -40,26 +40,33 @@ $this->params['breadcrumbs'][] = $this->title;
 //            ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'name',
+            ['attribute' => 'name',
+                'format'=> 'html',
+                'value' => function($data){
+                    return Html::a($data->name,Url::toRoute(['category/view', 'id' => $data->id]));
+                },
+            ],
             [
                 'attribute' => 'genre',
+                'filter'=>\app\models\Category::getGenreList(),
                 'value' => 'genre',
                 'headerOptions' => ['width' => '200'],
             ],
 
             [
                 'attribute' => 'description',
+                'format'=> 'raw',
                 'contentOptions' => ['class' => 'cell_class', 'style' => [
 
                 ]],
                 'content' => function ($data) {
-                    $text=Html::encode($data->description);
-                    if (strlen($text)>200){
-                        return Html::tag('div', substr($text,0,200).'...', ['class' => ['div_class'], 'style' => [
+                    $text = $data->description;
+                    if (strlen($text) > 200) {
+                        return Html::tag('div', substr($text, 0, 200) . '...', ['class' => ['div_class'], 'style' => [
                             // свойства каждого div
                         ]]);
-                    }else{
-                        return Html::tag('div', Html::encode($data->description), ['class' => ['div_class'], 'style' => [
+                    } else {
+                        return Html::tag('div', $data->description, ['class' => ['div_class'], 'style' => [
                             // свойства каждого div
                         ]]);
                     }
@@ -69,8 +76,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'is_active',
-                'value' => 'isActive',
-                'filter' => array('' => 'Все', "1" => "Вкл", "0" => "Выкл"),
+//                'value' => 'isActive',
+//                'filter' => array('' => 'Все', "1" => "Вкл", "0" => "Выкл"),
+                'filter' =>\app\models\Category::getStatusList(),
+                'value'=>'status',
             ],
 
             [
@@ -79,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //                'headerOptions' => ['width' => '80'],
                 'template' => '{view} {update} {delete}{addImage}',
                 'buttons' => [
-                    'addImage' => function ($url,$model,$key) {
+                    'addImage' => function ($url, $model, $key) {
                         return Html::a(
                             '<span class="glyphicon glyphicon-plus"><span class="glyphicon glyphicon-picture"></span></span>',
                             Url::toRoute(['image/create', 'category' => $key]));

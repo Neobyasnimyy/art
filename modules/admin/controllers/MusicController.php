@@ -27,8 +27,7 @@ class MusicController extends AppAdminController
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'update'=>['Post'],
-                    'PjaxIndex' => ['POST'],
+                    'update' => ['Post'],
                     'delete' => ['POST'],
                 ],
             ],
@@ -44,20 +43,18 @@ class MusicController extends AppAdminController
         $searchModel = new MusicSearch();
         $modelMusic = new Music();
         $uploadMusic = new UploadMusic();
-        $dataProvider = $searchModel->search(Yii::$app->request->post());
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $openForm = false;
 
         if (Yii::$app->request->isAjax && Yii::$app->request->post('ajax', 'music-form') && $modelMusic->Load(Yii::$app->request->post())) {
             Yii::$app->response->format = 'json';
             return ActiveForm::validate($modelMusic);
         }
-//        if (Yii::$app->request->isAjax && Yii::$app->request->post('_pjax')) {
-//            $dataProvider = $searchModel->search(Yii::$app->request->post());
-//            return $this->render('_gridView', [
-//                'searchModel' => $searchModel,
-//                'dataProvider' => $dataProvider,
-//            ]);
-//        }
+
+        if (Yii::$app->request->isPjax && Yii::$app->request->get()) {
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        }
+
 
         // добавление музыки
         if ($modelMusic->load(Yii::$app->request->post()) and $modelMusic->validate(['name'])) {
@@ -87,7 +84,7 @@ class MusicController extends AppAdminController
     }
 
     // action для GridViewMusic pjax для страницы индекс
-    public function actionPjaxIndex()
+    public function actionSearch()
     {
         $searchModel = new MusicSearch();
 
@@ -102,7 +99,7 @@ class MusicController extends AppAdminController
         return $this->render('_gridView', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            ]);
+        ]);
 
     }
 
@@ -121,7 +118,7 @@ class MusicController extends AppAdminController
         ) {
             $model = Music::findOne($modelMusic->id);
             // обновляет имя если оно изменилось
-            if (($modelMusic->validate(['name','id']) && ($modelMusic->name != $model->name))) {
+            if (($modelMusic->validate(['name', 'id']) && ($modelMusic->name != $model->name))) {
                 $model->name = $modelMusic->name;
 
                 $model->update();

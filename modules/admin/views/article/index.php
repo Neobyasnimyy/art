@@ -3,36 +3,50 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use yii\widgets\ListView;
+use yii\widgets\LinkPager;
+
+$this->registerJsFile('/js/admin/adminArticleIndex.js',
+    ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile("/css/admin/article/index.css");
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ArticleSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Статьи';
-$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="article-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+<!--    <h1>--><?php //echo Html::encode($this->title) ?><!--</h1>-->
+<!--    --><?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+    <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <?php echo Yii::$app->session->getFlash('success'); ?>
+        </div>
+    <?php endif; ?>
 
     <p>
-        <?= Html::a('Create Article', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php echo Html::submitButton('Добавить статью', ['id' => 'openFormNewArticle', 'class' => 'btn btn-primary']) ?>
     </p>
-<?php Pjax::begin(); ?>
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+    <div id="addArticle" style="display: <?php echo ($openFormArticle) ? 'block' : 'none' ;?>" class="row">
+        <?= $this->render('_form', [
+            'modelArticle' => $modelArticle,
+            'uploadImageArticle' =>$uploadImageArticle,
+        ]); ?>
+    </div>
 
-            'id',
-            'data',
-            'title',
-            'image_name',
-            'description:ntext',
-            // 'is_active',
+    <br>
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-<?php Pjax::end(); ?></div>
+    <div>
+        <?php echo $this->render('_gridView', [
+            'dataProviderArticle' => $dataProviderArticle,
+            'searchModelArticle' => $searchModelArticle,
+        ]) ?>
+    </div>
+
+
+</div>

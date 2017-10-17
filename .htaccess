@@ -1,6 +1,10 @@
 Options +FollowSymLinks
 IndexIgnore */*
+# включаем обработку переадресаций
 RewriteEngine on
+
+# проверка переменной в параметрах запроса для отмены зацикливание переадресации
+RewriteCond %{QUERY_STRING} !stopredirect=STOPREDIRECT
 
 RewriteCond %{REQUEST_URI} !^/(web)
 RewriteRule ^assets/(.*)$ /web/assets/$1 [L]
@@ -9,6 +13,13 @@ RewriteRule ^js/(.*)$ web/js/$1 [L]
 RewriteRule ^images/(.*)$ web/images/$1 [L]
 RewriteRule (.*) /web/$1
 
+# проверка, что файл к которому обратились существует на сервере
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+# проверка, что обратились к файлу в папке page
+RewriteCond %{REQUEST_URI} ^\/page\/(.+)$
+
+# 301 редирект на файл в корне сайта
+# RewriteRule .* /%1 [R=301,L]
+
 RewriteRule . /web/index.php

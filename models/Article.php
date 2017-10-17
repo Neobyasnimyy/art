@@ -35,8 +35,7 @@ class Article extends \yii\db\ActiveRecord
 
             [['data','title', 'description'], 'required'],
             [['description'], 'string'],
-            [['is_active'], 'boolean'],
-            ['is_active', 'default', 'value' => 1],
+            [['is_active'], 'integer','max'=>1,'min'=>0],
             [['title', 'image_name'], 'string', 'max' => 255],
         ];
     }
@@ -54,5 +53,30 @@ class Article extends \yii\db\ActiveRecord
             'description' => 'Описание',
             'is_active' => 'Активность',
         ];
+    }
+
+    // getter проверяет существует ли картинка на сервере,
+    // если нет то возвращает дефолтное изображение
+    public function getImage(){
+        $defaultImageUrl='/web/uploads/images/default.jpg';
+        $imageUrl = Yii::getAlias('@uploads').'/article/'.$this->image_name;
+        if (file_exists($imageUrl)&& is_file($imageUrl)) {
+            return '/web/uploads/article/'.$this->image_name;
+        } else {
+            return $defaultImageUrl;
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatusList(){
+        return [''=>'все',0=>'off',1=>'on'];
+    }
+
+    public function getStatus()
+    {
+        $list= self::getStatusList();
+        return $list[$this->is_active];
     }
 }

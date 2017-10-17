@@ -1,7 +1,7 @@
 <?php
 use yii\grid\GridView;
 use yii\helpers\Html;
-
+use yii\helpers\Url;
 
 ?>
 
@@ -51,10 +51,11 @@ use yii\helpers\Html;
             'label' => 'Картинка',
             'format' => 'raw',
             'value' => function ($data) {
-                return Html::img('/' . $data->imagePath, [
+                return Html::a((Html::img('/'.$data->imagePath, [
                     'alt' => 'Изображение отсутствует',
                     'style' => 'width:150px;'
-                ]);
+                ])), ['/'.$data->imagePath], ['class' => '','data-pjax'=>"0"]);
+
             },
         ],
 

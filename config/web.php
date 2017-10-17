@@ -11,18 +11,25 @@ $config = [
 //    'layout'=>'basic',
 //    глобальное изменение языка
     'language' => 'ru',
-    'defaultRoute'=>'site/index',
+    'defaultRoute' => 'site/index',
     'modules' => [
+
         'admin' => [
             'class' => 'app\modules\admin\Module',
-            'layout' =>'admin',
+            'layout' => 'admin',
+
         ],
+
     ],
     'components' => [
+        'image' => [
+            'class' => 'yii\image\ImageDriver',
+            'driver' => 'GD',  //GD or Imagick
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'P-fXG7QO2bGnb-jHXeIpbudR0GtsaHgV',
-            'baseUrl'=> '',
+            'baseUrl' => '',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -59,6 +66,7 @@ $config = [
 //            'suffix'=>'.html', //
             'rules' => [
                 '<action:(about|contact|login|register)>' => 'site/<action>',
+//                'admin/<controller:(article|image)>' => 'admin/<controller>/index',
             ],
         ],
     ],

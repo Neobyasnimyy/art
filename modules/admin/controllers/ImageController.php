@@ -101,10 +101,9 @@ class ImageController extends AppAdminController
 
         if ($modelImage->load(Yii::$app->request->post())) { //
             $uploadImage->image = UploadedFile::getInstance($uploadImage, 'image');
-
 //             этот метот сохраняет изображение в папке с id категории и занимается валидацией
-            if ($uploadImage->upload($modelImage->id_category)) {
-                $modelImage->image_path = $uploadImage->newName();
+            if ($uploadImage->upload('image',$modelImage->id_category)) {
+                $modelImage->image_path = $uploadImage->image->name;
                 $modelImage->save();
                 Yii::$app->session->setFlash('success', 'Данные приняты'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
                 return $this->redirect(['/admin/image']);

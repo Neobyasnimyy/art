@@ -84,10 +84,30 @@ class Category extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return string 'Вкл' or 'Выкл' with Categori.is_active
+     * @return mixed
      */
-    public function getIsActive()
+    public function getStatus()
     {
-        return $this->is_active ? 'Вкл' : 'Выкл';
+        $list= self::getStatusList();
+        return $list[$this->is_active];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatusList(){
+        return [0=>'off',1=>'on'];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getGenreList(){
+        $result = [];
+        $arr = self::find()->select('genre')->asArray()->all();
+        foreach ($arr as $item){
+            $result[$item['genre']]=$item['genre'];
+        }
+        return array_unique($result);
     }
 }

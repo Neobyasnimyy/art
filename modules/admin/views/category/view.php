@@ -35,9 +35,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             'genre',
-            'description:ntext',
+            'description:html',
+
             ['label' => 'Активность',
-                'value' =>$model->getIsActive()
+                'value' =>$model->getStatus()
                 ],
 
         ],

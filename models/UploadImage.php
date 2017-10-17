@@ -17,7 +17,7 @@ class UploadImage extends Model
             [['image'],
                 'file',
                 'extensions' => 'png, jpg, gif, bmp',
-                'skipOnEmpty' => false, // обязательная загрузка файла
+//                'skipOnEmpty' => false, // обязательная загрузка файла
                 'maxSize' => 1024 * 1024 * 3,
                 'tooBig' => "Файл «{file}» слишком большой. Размер не должен превышать 3 MB.",
                 'mimeTypes' => ['image/gif', 'image/jpeg', 'image/png']
@@ -35,34 +35,54 @@ class UploadImage extends Model
         ];
     }
 
-    /**
-     * этот метот сохраняет изображение в папке с id категории и занимается валидацией
-     * @param $idCategory
-     * @return bool
-     */
-    public function upload($idCategory)
-    {
-        if ($this->validate() and isset($idCategory)) {
-            $this->image->saveAs(Yii::getAlias('@uploads')
-                . "/images/{$idCategory}/{$this->image->baseName}-"
-                . date('YmdHi', time()) . ".{$this->image->extension}");
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     /**
-     * добавляем к имени дату и время
-     * для того чтобы можно было добавлять одинаковые картинки
-     * @return string
+     * этот метот сохраняет изображение в папке с id категории и занимается валидацией
+     * @param string $modelName
+     * @param integer $idCategory
+     * @return bool
      */
-    public function newName()
+    public function upload($modelName, $idCategory=null)
     {
-        $str = $this->image->name;
-        $spos = strrpos($str, '.');
-        $newName = substr($str, 0, $spos) .rand(0,9999). date('YmdHi', time()) . substr($str, $spos);
-        return $newName;
+        switch ($modelName){
+            case ('image'):
+                if ($this->validate() and isset($idCategory)) {
+                    $this->image->name= rand(0,9999)."-". date('YmdHi', time()).'.'.$this->image->extension;
+//                    $this->image->saveAs(Yii::getAlias('@uploads')
+//                        . "/images/{$idCategory}/{$this->image->baseName}-"
+//                        . date('YmdHi', time()) . ".{$this->image->extension}");
+                    $this->image->saveAs(Yii::getAlias('@uploads')
+                        . "/images/{$idCategory}/{$this->image->name}");
+                    return true;
+                } else {
+                    return false;
+                }
+                break;
+            case ('article'):
+                if ($this->validate()) {
+                    $this->image->name= rand(0,9999)."-". date('YmdHi', time()).'.'.$this->image->extension;
+                    $this->image->saveAs(Yii::getAlias('@uploads')
+                        . "/article/{$this->image->name}");
+                    return true;
+                } else {
+                    return false;
+                }
+                break;
+        }
+
     }
+
+//    /**
+//     * добавляем к имени дату и время
+//     * для того чтобы можно было добавлять одинаковые картинки
+//     * @return string
+//     */
+//    public function newName()
+//    {
+//        $str = $this->image->name;
+//        $spos = strrpos($str, '.');
+//        $this->image->name = rand(0,9999). date('YmdHi', time()) . substr($str, $spos);
+//        return $this->image->name;
+//    }
 
 }

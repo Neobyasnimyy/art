@@ -50,6 +50,7 @@ class ArticleSearch extends Article
             'pagination' => [
                 'pageSize' => 3,
             ],
+            'sort'=> ['defaultOrder' => ['id' => SORT_DESC]]
         ]);
 
         $this->load($params);
@@ -63,12 +64,12 @@ class ArticleSearch extends Article
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'data' => $this->data,
-            'is_active' => $this->is_active,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'image_name', $this->image_name])
+
+        $query->andFilterWhere(['like', 'is_active', $this->is_active])
+            ->andFilterWhere(['like', 'data', $this->data])
+            ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;

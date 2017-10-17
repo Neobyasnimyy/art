@@ -21,9 +21,9 @@ class AppAsset extends AssetBundle
         'css/site.css',
     ];
     public $js = [
-        'js/bootstrap-filestyle.min.js'
+//        'js/bootstrap-filestyle.min.js'
     ];
-    public $depends = [
+    public $depends = [ // массив, перечисляющий имена комплектов ресурсов, от которых зависит данный комплект.
         'yii\web\YiiAsset',
 //        'yii\bootstrap\BootstrapAsset',
         'yii\bootstrap\BootstrapPluginAsset',

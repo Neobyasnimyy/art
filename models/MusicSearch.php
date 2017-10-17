@@ -74,7 +74,6 @@ class MusicSearch extends Music
         $query->andFilterWhere([
             'id' => $this->id,
         ]);
-
         $query->andFilterWhere(['like', 'file_name', $this->file_name])
             ->andFilterWhere(['like', 'name', $this->name]);
 
