@@ -16,6 +16,19 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            ['id','integer'],
+            [['email','role'],'trim'],
+            [['role','email'], 'string','max' => 255, 'tooShort' => 'Уменьшите количество символов'],
+            ['role','in','range'=>['user','admin']]
+        ];
+    }
+
+    /**
      * Возвращает найденого пользователя по его id
      * @param int|string $id
      * @return static

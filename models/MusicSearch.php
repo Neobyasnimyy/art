@@ -17,6 +17,9 @@ class MusicSearch extends Music
      */
     public function rules()
     {
+//        $rules = parent::rules();
+//        unset($rules['name']);
+
         return [
             //[['id'], 'integer'],
             [['name','file_name'],'trim'],
