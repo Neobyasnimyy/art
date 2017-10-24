@@ -8,7 +8,7 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
 //    глобальное изменение шаблона
-//    'layout'=>'basic',
+    'layout'=>'basic',
 //    глобальное изменение языка
     'language' => 'ru',
     'defaultRoute' => 'site/index',

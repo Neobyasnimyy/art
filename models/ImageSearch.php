@@ -20,6 +20,9 @@ class ImageSearch extends Image
         return [
             [['id', 'id_category'], 'integer'],
             [['image_path'], 'safe'],
+            ['name_for_slider', 'trim'],
+            ['name_for_slider', 'string', 'max' => 255],
+            [['slider_up','slider_down'],'integer'],
         ];
     }
 
@@ -50,6 +53,8 @@ class ImageSearch extends Image
             'pagination' => [
                 'pageSize' => 3,
             ],
+            'sort'=> ['defaultOrder' => ['id' => SORT_DESC]]
+
         ]);
 
         $query->with('category');
@@ -67,11 +72,14 @@ class ImageSearch extends Image
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'slider_up' => $this->slider_up,
+            'slider_down' => $this->slider_down,
             'id_category' => $this->id_category,
         ]);
 
 
-        $query->andFilterWhere(['like', 'image_path', $this->image_path]);
+        $query->andFilterWhere(['like', 'image_path', $this->image_path])
+            ->andFilterWhere(['like', 'name_for_slider', $this->name_for_slider]);
 
         return $dataProvider;
     }

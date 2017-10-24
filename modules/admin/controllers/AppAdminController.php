@@ -19,7 +19,7 @@ class appAdminController extends Controller
 {
     public function beforeAction($action)
     {
-        if (Yii::$app->user->identity['role'] == 'user') {
+        if (Yii::$app->user->identity['role'] != 'admin') {
             return $this->goHome();
         }
         return [
@@ -60,8 +60,12 @@ class appAdminController extends Controller
                 $model->file->name = rand(0, 9999) . "-" . date('YmdHi', time()) . '.' . $model->file->extension;
                 if ($model->file->saveAs($dir . $model->file->name)) {
                     $image = Yii::$app->image->load($dir.$model->file->name);
-                    $image->resize(800,null, Image::PRECISE)
-                    ->save($dir.$model->file->name,85);// 800 ширина и как получится по высоте, качество 85 %
+//                    $image->resize(800,null, Image::PRECISE)
+//                    ->save($dir.$model->file->name,85);// 800 ширина и как получится по высоте, качество 85 %
+                    $image->background('#fff',0); // фон картинки
+                    $image->resize('475','320',Yii\image\drivers\Image::INVERSE); // если 200x100 то получит 100x50
+                    $image->crop('475','320'); // обрезаем
+                    $image->save($dir.$model->file->name,100);
                     $result = ['filelink' => $resultLink . $model->file->name,
                         'filename' => $model->file->name];
                 } else {

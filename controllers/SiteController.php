@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\About;
+use app\models\Message;
 use app\models\RegisterForm;
 use Yii;
 use yii\filters\AccessControl;
@@ -48,9 +49,9 @@ class SiteController extends Controller
     public function actions()
     {
         return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
+//            'error' => [
+//                'class' => 'yii\web\ErrorAction',
+//            ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
@@ -87,10 +88,11 @@ class SiteController extends Controller
             $user = new User();
             $user->username = $model->username;
             $user->email = $model->email;
+            $user->role='user';
             $user->password = \Yii::$app->security->generatePasswordHash($model->password);
             if($user->save()){
                 Yii::$app->session->setFlash('success','Регистрация прошла успешно'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
-                return Yii::$app->response->redirect(Url::to('/admin'));
+                return Yii::$app->response->redirect(Url::to('/login'));
             }
         }
         return $this->render('register', compact('model'));
@@ -135,10 +137,14 @@ class SiteController extends Controller
     public function actionContact()
     {
         $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
+        $message = new Message();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $message->setAttributes($model->getAttributes());
+            if ($message->save()){
+                Yii::$app->session->setFlash('contactFormSubmitted');
+                return $this->refresh();
+            }
 
-            return $this->refresh();
         }
         return $this->render('contact', [
             'model' => $model,

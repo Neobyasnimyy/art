@@ -17,6 +17,7 @@ use yii\helpers\Url;
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
+    'layout' => "{items}\n{pager}",
 
 //        'viewParams' => [
 //            '$categoryList' => $categoryList,
@@ -45,16 +46,34 @@ use yii\helpers\Url;
             'filter' => Html::dropDownList('ImageSearch[id_category]', $searchModel->id_category, $categoryListForFilter, ['class' => 'form-control']),
 //                'filter' => $categoryList,
         ],
-        'image_path',
+        'name_for_slider',
+        [
+            'attribute' => 'slider_up',
+            'format' => 'raw',
+            'filter' => Html::dropDownList('ImageSearch[slider_up]', $searchModel->slider_up, [''=>'Все',0=>'Отключен',1=>'Активный',], ['class' => 'form-control']),
+            'value' => function ($data) {
+                $icon=($data->slider_up==1)?'glyphicon glyphicon-ok':'glyphicon glyphicon-remove';
+                return Html::tag('span', '', ['class' => $icon]);
+            },
+        ],
+        [
+            'attribute' => 'slider_down',
+            'format' => 'raw',
+            'filter' => Html::dropDownList('ImageSearch[slider_down]', $searchModel->slider_down, [''=>'Все',0=>'Отключен',1=>'Активный',], ['class' => 'form-control']),
+            'value' => function ($data) {
+                $icon=($data->slider_down==1)?'glyphicon glyphicon-ok':'glyphicon glyphicon-remove';
+                return Html::tag('i', '', ['class' => $icon]);
+            },
+        ],
         [
             'headerOptions' => ['width' => '160'],
             'label' => 'Картинка',
             'format' => 'raw',
             'value' => function ($data) {
-                return Html::a((Html::img('/'.$data->imagePath, [
+                return Html::a((Html::img('/' . $data->imagePath, [
                     'alt' => 'Изображение отсутствует',
                     'style' => 'width:150px;'
-                ])), ['/'.$data->imagePath], ['class' => '','data-pjax'=>"0"]);
+                ])), ['/' . $data->imagePath], ['class' => '', 'data-pjax' => "0"]);
 
             },
         ],

@@ -30,7 +30,7 @@ $(document).ready(function(){
             // console.log('click');
             var data = $(this).parents('form').serialize();
             $.ajax({
-                url: '/admin/image/update',
+                url: '/admin/image/update-category',
                 type: 'POST',
                 data: data,
                 success: function(res){

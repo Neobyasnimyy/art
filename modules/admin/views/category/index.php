@@ -9,13 +9,9 @@ use yii\helpers\Url;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Категории галереи';
-$this->params['breadcrumbs'][] = ['label' => 'Настройки', 'url' => ['/admin']];
-$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="categories-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?php if (Yii::$app->session->hasFlash('success')): ?>
         <div class="alert alert-success alert-dismissable">
@@ -25,8 +21,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <p>
-        <?= Html::a('Добавить категорию', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить категорию', ['create-category'], ['class' => 'btn btn-success']) ?>
     </p>
+
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
+
 
     <?php \yii\widgets\Pjax::begin(['id' => 'some-id-you-like',
         'timeout' => false,
@@ -74,6 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
 
             ],
+
             [
                 'attribute' => 'is_active',
 //                'value' => 'isActive',
@@ -86,14 +86,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
 //                'header'=>'Действия',
 //                'headerOptions' => ['width' => '80'],
-                'template' => '{view} {update} {delete}{addImage}',
-                'buttons' => [
-                    'addImage' => function ($url, $model, $key) {
-                        return Html::a(
-                            '<span class="glyphicon glyphicon-plus"><span class="glyphicon glyphicon-picture"></span></span>',
-                            Url::toRoute(['image/create', 'category' => $key]));
-                    },
-                ],
+                'template' => '{view} {update} {delete}',
+                'urlCreator'=>function($action, $model, $key, $index){
+                        if ($action=='view'){
+                            return \yii\helpers\Url::to(['/category/' . $action, 'id' => $model->id]);
+                        }else{
+                            return \yii\helpers\Url::to(['' . $action . '-category', 'id' => $model->id]);
+
+                        }
+                }
             ],
         ],
     ]); ?>

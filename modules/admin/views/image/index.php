@@ -18,31 +18,41 @@ $this->registerJsFile('/js/admin/adminImageIndex.js',
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Изображения';
-$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="images-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div>
+        <?php if (Yii::$app->session->hasFlash('success')): ?>
+            <div class="alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <?php echo Yii::$app->session->getFlash('success'); ?>
+            </div>
+        <?php endif; ?>
+    </div>
 
-    <?php if (Yii::$app->session->hasFlash('success')): ?>
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            <?php echo Yii::$app->session->getFlash('success'); ?>
-        </div>
-    <?php endif; ?>
+    <div class="text-center">
+        <h1><?= Html::encode($this->title) ?></h1>
+    </div>
 
-    <?= Html::submitButton('Добавить Картинку', ['id' => 'openFormNewImage', 'class' => 'btn btn-primary']) ?>
 
-    <div id="_divAddImage" style="display: <?php echo ($openForm) ? 'block' : 'none' ;?>">
+    <div>
+        <?= Html::submitButton('Добавить Изображение', ['id' => 'openFormNewImage', 'class' => 'btn btn-primary']) ?>
+    </div>
+    <br>
+
+    <div id="_divAddImage" class="col-md-6" style="display: <?php echo ($openForm) ? 'block' : 'none' ;?> ">
         <?= $this->render('_form', [
             'modelImage' => $modelImage,
             'categoryList' => $categoryList,
             'uploadImage' => $uploadImage
         ]) ?>
+        <br>
     </div>
 
+
     <div>
-        <?= $this->render('_gridView', [
+        <?php echo $this->render('_gridView', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
             'categoryListForFilter' => $categoryListForFilter,

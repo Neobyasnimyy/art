@@ -47,6 +47,9 @@ class UploadImage extends Model
         switch ($modelName){
             case ('image'):
                 if ($this->validate() and isset($idCategory)) {
+                    if (!file_exists(Yii::getAlias('@uploads'). "/images/{$idCategory}")){
+                        mkdir(Yii::getAlias('@uploads')."/images/{$idCategory}", 0775, true);
+                    }
                     $this->image->name= rand(0,9999)."-". date('YmdHi', time()).'.'.$this->image->extension;
 //                    $this->image->saveAs(Yii::getAlias('@uploads')
 //                        . "/images/{$idCategory}/{$this->image->baseName}-"
@@ -63,6 +66,16 @@ class UploadImage extends Model
                     $this->image->name= rand(0,9999)."-". date('YmdHi', time()).'.'.$this->image->extension;
                     $this->image->saveAs(Yii::getAlias('@uploads')
                         . "/article/{$this->image->name}");
+                    return true;
+                } else {
+                    return false;
+                }
+                break;
+            case ('about'):
+                if ($this->validate()) {
+                    $this->image->name= rand(0,9999)."-". date('YmdHi', time()).'.'.$this->image->extension;
+                    $this->image->saveAs(Yii::getAlias('@uploads')
+                        . "/about/{$this->image->name}");
                     return true;
                 } else {
                     return false;

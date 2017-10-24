@@ -45,7 +45,7 @@ AppAsset::register($this);
             ['label' => 'Галерея', 'url' => ['/site/contact']],
             Yii::$app->user->isGuest ? (
                  '<li>'
-                . Html::a(' Вход', ['/admin' ], ['class' => ''])
+                . Html::a(' Вход', ['/login' ], ['class' => ''])
                 .'</li>'
                 .'<li>'
                 . Html::a(' Регистрация', ['/site/register' ], ['class' => ''])
@@ -69,9 +69,9 @@ AppAsset::register($this);
     ?>
 
     <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
+<!--        --><?php //echo Breadcrumbs::widget([
+//            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+//        ]) ?>
         <?= $content ?>
     </div>
 </div>

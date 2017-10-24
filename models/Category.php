@@ -74,6 +74,7 @@ class Category extends \yii\db\ActiveRecord
         return $this->hasMany(Image::className(), ['id_category' => 'id']);
     }
 
+
     /**
      * @return array Categories.name
      */

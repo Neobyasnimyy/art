@@ -29,9 +29,9 @@ class RegisterForm extends Model
                 return HtmlPurifier::process($value);
             }],
             // password is validated by passwordStrength()
-            ['password', 'validatePassword'],
-//            [['password'], 'string', 'max' => 30,'tooShort' => 'Пароль слишком длинный'],
+            [['password'], 'string', 'max' => 30,'tooShort' => 'Пароль слишком длинный'],
             [['password'], 'string', 'min' => 6,'tooShort' => 'Пароль слишком короткий.'],
+            ['password', 'validatePassword'],
 
             // атрибут email указывает, что в переменной email должен быть корректный адрес электронной почты
             ['email', 'email'],
@@ -46,9 +46,9 @@ class RegisterForm extends Model
      */
     public function validatePassword($attribute)
     {
-        $pattern = '/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}/';
+        $pattern = '/(?=.*[0-9])(?=.*[a-zA-Z])[0-9a-zA-Z]{6,}/';
         if(!preg_match($pattern, $this->$attribute))
-            $this->addError($attribute, 'Пароль должен содержать латинские буквы в верхнем и нижнем регистре, и хотя бы одно число.');
+            $this->addError($attribute, 'Пароль должен содержать только латинские буквы и хотя бы одно число.');
 
 
     }

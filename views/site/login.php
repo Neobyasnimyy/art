@@ -8,17 +8,23 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->title = 'Вход';
-$this->params['breadcrumbs'][] = $this->title;
+$this->registerLinkTag([
+    'rel' => 'stylesheet',
+    'href' => '//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css',
+]);
+
 ?>
+<?php if (Yii::$app->session->hasFlash('success')): ?>
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <?php echo Yii::$app->session->getFlash('success'); ?>
+    </div>
+<?php endif; ?>
+
 <div class="site-login">
     <h1><?php echo Html::encode($this->title) ?></h1>
 
-    <?php if (Yii::$app->session->hasFlash('success')): ?>
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            <?php echo Yii::$app->session->getFlash('success'); ?>
-        </div>
-    <?php endif; ?>
+
 
     <!--    <p>Введите данные для входа</p>-->
 

@@ -5,6 +5,7 @@ use yii\widgets\Pjax;
 use yii\helpers\Html;
 use kartik\date\DatePicker;
 use yii\widgets\LinkPager;
+
 ?>
 
 
@@ -15,7 +16,7 @@ use yii\widgets\LinkPager;
 <?= GridView::widget([
     'dataProvider' => $dataProviderArticle,
     'filterModel' => $searchModelArticle,
-    'layout'=>"{summary}\n{items}",
+    'layout' => "{summary}\n{items}",
     'columns' => [
 
         [
@@ -25,21 +26,21 @@ use yii\widgets\LinkPager;
         ],
         [
             'attribute' => 'data',
-            'contentOptions'=>[
-                'style'=>'min-width:100px;'
+            'contentOptions' => [
+                'style' => 'min-width:100px;'
             ],
             'filter' => DatePicker::widget([
                 'type' => DatePicker::TYPE_INPUT,
-                'model'=>$searchModelArticle,
-                'attribute'=>'data',
+                'model' => $searchModelArticle,
+                'attribute' => 'data',
                 'language' => 'ru',
                 'pluginOptions' => [
                     'autoclose' => true,
-                    'minViewMode'=>'months',
+                    'minViewMode' => 'months',
                     'todayHighlight' => true,// подсвечивает сегодняшнюю дату
-                    'startView'=>1, // сначало выбираем год => 2
+                    'startView' => 1, // сначало выбираем год => 2
                     'format' => 'yyyy-mm',
-                    'clearBtn'=>true,
+                    'clearBtn' => true,
                 ],
             ]),
 
@@ -47,8 +48,8 @@ use yii\widgets\LinkPager;
 
         [
             'attribute' => 'title',
-            'contentOptions'=>[
-                'style'=>'min-width:250px;'
+            'contentOptions' => [
+                'style' => 'min-width:250px;'
             ]
         ],
         [
@@ -59,7 +60,7 @@ use yii\widgets\LinkPager;
             'content' => function ($data) {
                 $text = $data->description;
                 if (strlen($text) > 300) {
-                    return Html::tag('div', substr($text, 0, strpos ($text,' ',300)) . ' ...', ['class' => ['div_class'], 'style' => [
+                    return Html::tag('div', substr($text, 0, strpos($text, ' ', 300)) . ' ...', ['class' => ['div_class'], 'style' => [
                         // свойства каждого div
                     ]]);
                 } else {
@@ -76,10 +77,10 @@ use yii\widgets\LinkPager;
             'label' => 'Обложка',
             'format' => 'raw',
             'value' => function ($data) {
-                return Html::a((Html::img( $data->image, [
+                return Html::a((Html::img($data->image, [
                     'alt' => 'Изображение отсутствует',
                     'style' => 'width:150px;'
-                ])), [ $data->image], ['class' => '', 'data-pjax' => "0"]);
+                ])), [$data->image], ['class' => '', 'data-pjax' => "0"]);
 
             },
         ],
@@ -90,15 +91,24 @@ use yii\widgets\LinkPager;
             'value' => 'status',
         ],
 
-        ['class' => 'yii\grid\ActionColumn'],
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'urlCreator' => function ($action, $model, $key, $index) {
+                if ($action == 'view') {
+                    return \yii\helpers\Url::to(['/article/' . $action, 'id' => $model->id]);
+                }else{
+                    return \yii\helpers\Url::to(['/admin/article/' . $action, 'id' => $model->id]);
+                }
+            }
+        ],
     ],
 ]); ?>
 
-<div class="text-center">
-    <?php echo LinkPager::widget([
-        'pagination' => $dataProviderArticle->pagination,
-    ]);?>
-</div>
+    <div class="text-center">
+        <?php echo LinkPager::widget([
+            'pagination' => $dataProviderArticle->pagination,
+        ]); ?>
+    </div>
 
 
 <?php Pjax::end(); ?>

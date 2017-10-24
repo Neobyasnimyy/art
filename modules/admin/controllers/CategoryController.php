@@ -7,7 +7,10 @@ use app\models\Category;
 use app\models\CategorySearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\helpers\Html;
+use app\models\Image;
+use app\models\ImageSearch;
+use app\models\UploadImage;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -23,7 +26,7 @@ class CategoryController extends AppAdminController
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete-category' => ['POST'],
                 ],
             ],
         ];
@@ -36,6 +39,7 @@ class CategoryController extends AppAdminController
     public function actionIndex()
     {
         $searchModel = new CategorySearch();
+
 //        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $dataProvider = $searchModel->search(Yii::$app->request->post()); // Pjax
@@ -46,33 +50,34 @@ class CategoryController extends AppAdminController
         ]);
     }
 
-    /**
-     * Displays a single Category model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+//    /**
+//     * Displays a single Category model.
+//     * @param integer $id
+//     * @return mixed
+//     */
+//    public function actionView($id)
+//    {
+//        return $this->render('view', [
+//            'model' => $this->findModel($id),
+//        ]);
+//    }
 
     /**
      * Creates a new Category model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreateCategory()
     {
-        $model = new Category();
+        $modelCategory = new Category();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            mkdir(Yii::getAlias('@app').'/web/uploads/images/'.$model->id, 0775, true);
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($modelCategory->load(Yii::$app->request->post()) && $modelCategory->save()) {
+            mkdir(Yii::getAlias('@app') . '/web/uploads/images/' . $modelCategory->id, 0775, true);
+            Yii::$app->session->setFlash('success', "Данные сохранены. Вернутся к <a href='/admin/category'>списку категорий</a>!"); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
+            return $this->redirect(['update-category', 'id' => $modelCategory->id]);
         } else {
-            return $this->render('create', [
-                'model' => $model,
+            return $this->render('create-category', [
+                'modelCategory' => $modelCategory,
             ]);
         }
     }
@@ -83,18 +88,32 @@ class CategoryController extends AppAdminController
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdateCategory($id)
     {
-        $model = $this->findModel($id);
+        $modelCategory = $this->findModel($id);
+        $searchModelImage = new ImageSearch();
+        $searchModelImage->id_category = $id;
+        $categoryList = Category::getCategoriesList();
+        $categoryListForFilter = ['' => 'Все'] + $categoryList;
+        $dataProviderImage = $searchModelImage->search(Yii::$app->request->queryParams);// Pjax
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+
+
+        if ($modelCategory->load(Yii::$app->request->post()) && $modelCategory->save()) {
+            Yii::$app->session->setFlash('success', "Данные сохранены. Вернутся к <a href='/admin/category'>списку категорий</a>!"); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
+            return $this->refresh();
         }
+
+        return $this->render('update-category', [
+            'modelCategory' => $modelCategory,
+            'searchModelImage' => $searchModelImage,
+            'dataProviderImage' => $dataProviderImage,
+            'categoryList' => $categoryList,
+            'categoryListForFilter' => $categoryListForFilter,
+        ]);
+
     }
+
 
     /**
      * Deletes an existing Category model.
@@ -102,11 +121,11 @@ class CategoryController extends AppAdminController
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionDeleteCategory($id)
     {
         $this->findModel($id)->delete();
-        myDelete(Yii::getAlias('@app').'/web/uploads/images/'.$id);
-        Yii::$app->session->setFlash('success','Данные успешно удалены'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
+        myDelete(Yii::getAlias('@app') . '/web/uploads/images/' . $id);
+        Yii::$app->session->setFlash('success', 'Данные успешно удалены'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
         return $this->redirect(['index']);
     }
 

@@ -8,9 +8,7 @@ use app\models\Category;
 /* @var $model app\models\Category */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Настройки', 'url' => ['/admin']];
-$this->params['breadcrumbs'][] = ['label' => 'Категории', 'url' => ['/admin/category']];
-$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="categories-view">
 

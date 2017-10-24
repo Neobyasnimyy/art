@@ -29,8 +29,6 @@ class UserController extends appAdminController
 
     public function actionIndex()
     {
-
-
         $searchModelUser = new UserSearch();
 
         $dataProviderUser = $searchModelUser->search(Yii::$app->request->queryParams);

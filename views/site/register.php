@@ -4,13 +4,16 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->title = 'Вход';
-$this->params['breadcrumbs'][] = $this->title;
+$this->registerLinkTag([
+    'rel' => 'stylesheet',
+    'href' => '//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css',
+]);
 ?>
 
     <div class="site-login">
 
 <!--        <h1>--><?php //echo Html::encode($this->title) ?><!--</h1>-->
-        <h3>Введите данные для регистрации</h3>
+        <h3>Форма регистрации</h3>
 
         <?php $form = ActiveForm::begin([
             'id' => 'register-form',

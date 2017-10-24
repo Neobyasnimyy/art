@@ -32,13 +32,14 @@ class Image extends \yii\db\ActiveRecord
         return [
             [['id'], 'integer'],
             [['id_category'], 'integer'],
-            [['image_path'], 'required'],
-//            ['image_path', 'string', 'max' => 255],
-            // проверяет, что "image_path" - это загруженное изображение в формате PNG,bmp, JPG или GIF
-            // размер файла должен быть меньше 3MB
-            // https://yiiframework.com.ua/ru/doc/guide/2/tutorial-core-validators/#file
-//            ['imageFile', 'file', 'extensions' => ['png', 'jpg', 'gif','bmp'], 'maxSize' => 1024*1024*3],
-            ['id_category','required','message'=>'Необходимо выбрать категорию!'],
+//            [['image_path'], 'required'],
+            ['image_path', 'string', 'max' => 255],
+            ['name_for_slider', 'trim'],
+            ['name_for_slider', 'string', 'max' => 255],
+            [['slider_up'], 'integer'],
+            [['slider_down'], 'integer'],
+//            [['slider_up','	slider_down'],'default', 'value' => 0],
+            ['id_category', 'required', 'message' => 'Необходимо выбрать категорию!'],
             [['id_category'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['id_category' => 'id']],
         ];
     }
@@ -52,6 +53,10 @@ class Image extends \yii\db\ActiveRecord
             'id' => '№',
             'id_category' => 'Категория',
             'image_path' => 'Имя файла',
+            'name_for_slider' => 'Текст для слайда',
+            'slider_up' => 'Верхний слайдер',
+            'slider_down' => 'Нижний слайдер',
+
         ];
     }
 
@@ -65,11 +70,12 @@ class Image extends \yii\db\ActiveRecord
 
     // getter проверяет существует ли картинка на сервере,
     // если нет то возвращает дефолтное изображение
-    public function getImagePath(){
-        $defaultImageUrl='web/uploads/images/default.jpg';
-        $imageUrl = Yii::getAlias('@uploads').'/images/'.$this->id_category.'/'.$this->image_path;
+    public function getImagePath()
+    {
+        $defaultImageUrl = 'web/uploads/images/default.jpg';
+        $imageUrl = Yii::getAlias('@uploads') . '/images/' . $this->id_category . '/' . $this->image_path;
         if (file_exists($imageUrl)) {
-            return 'web/uploads/images/'.$this->id_category.'/'.$this->image_path;
+            return 'web/uploads/images/' . $this->id_category . '/' . $this->image_path;
         } else {
             return $defaultImageUrl;
         }

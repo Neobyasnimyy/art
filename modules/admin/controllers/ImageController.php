@@ -10,7 +10,7 @@ use app\models\UploadImage;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
-
+use yii\web\Response;
 /**
  * ImageController implements the CRUD actions for images model.
  */
@@ -25,8 +25,10 @@ class ImageController extends AppAdminController
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
-                    'update' => ['POST'],
+                    'delete-category' => ['POST'],
+                    'update-category' => ['POST'],
+                    'update-name' => ['POST'],
+                    'edit-slider' => ['POST'],
                 ],
             ],
         ];
@@ -36,43 +38,43 @@ class ImageController extends AppAdminController
      * Lists all images models.
      * @return mixed
      */
-    public function actionIndex()
-    {
-        $searchModel = new ImageSearch();
-        $modelImage = new Image();
-        $uploadImage = new UploadImage();
-        $categoryList = Category::getCategoriesList();
-        $categoryListForFilter = ['' => 'Все'] + $categoryList;
-        $dataProvider = $searchModel->search([]);
-        $openForm = false;
-
-//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams); // Get
-
-        // обработка для filter-GridView через pjax
-        if (Yii::$app->request->isPost) {
+//    public function actionIndex()
+//    {
+//        $searchModel = new ImageSearch();
+//        $modelImage = new Image();
+//        $uploadImage = new UploadImage();
+//        $categoryList = Category::getCategoriesList();
+//        $categoryListForFilter = ['' => 'Все'] + $categoryList;
+//        $dataProvider = $searchModel->search([]);
+//        $openForm = false;
 //
-            if (Yii::$app->request->post('ImageSearch') == true) {
-
-                $dataProvider = $searchModel->search(Yii::$app->request->post()); // Pjax
-                return $this->renderAjax('_gridView', [
-                    'dataProvider' => $dataProvider,
-                    'searchModel' => $searchModel,
-                    'categoryListForFilter' => $categoryListForFilter,
-                    'categoryList' => $categoryList,
-                ]);
-            }
-        }
-
-        return $this->render('index', [
-            'modelImage' => $modelImage,
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'categoryList' => $categoryList,
-            'categoryListForFilter' => $categoryListForFilter,
-            'openForm' => $openForm,
-            'uploadImage' => $uploadImage,
-        ]);
-    }
+////        $dataProvider = $searchModel->search(Yii::$app->request->queryParams); // Get
+//
+//        // обработка для filter-GridView через pjax
+//        if (Yii::$app->request->isPost) {
+////
+//            if (Yii::$app->request->post('ImageSearch') == true) {
+//
+//                $dataProvider = $searchModel->search(Yii::$app->request->post()); // Pjax
+//                return $this->renderAjax('_gridView', [
+//                    'dataProvider' => $dataProvider,
+//                    'searchModel' => $searchModel,
+//                    'categoryListForFilter' => $categoryListForFilter,
+//                    'categoryList' => $categoryList,
+//                ]);
+//            }
+//        }
+//
+//        return $this->render('index', [
+//            'modelImage' => $modelImage,
+//            'searchModel' => $searchModel,
+//            'dataProvider' => $dataProvider,
+//            'categoryList' => $categoryList,
+//            'categoryListForFilter' => $categoryListForFilter,
+//            'openForm' => $openForm,
+//            'uploadImage' => $uploadImage,
+//        ]);
+//    }
 
 //    /**
 //     * Displays a single images model.
@@ -91,7 +93,7 @@ class ImageController extends AppAdminController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($category = null)
+    public function actionCreate($categoryId = null)
     {
         $modelImage = new Image();
         $uploadImage = new UploadImage();
@@ -99,29 +101,37 @@ class ImageController extends AppAdminController
         $categoryListForFilter = ['' => 'Все'] + $categoryList;
         $searchModel = new ImageSearch();
 
-        if ($modelImage->load(Yii::$app->request->post())) { //
+        if ($modelImage->load(Yii::$app->request->post())) {
             $uploadImage->image = UploadedFile::getInstance($uploadImage, 'image');
+//            var_dump($modelImage->slider_down);
+//            debug($uploadImage->image);
+//            debug($_POST);
+//            die();
+
 //             этот метот сохраняет изображение в папке с id категории и занимается валидацией
-            if ($uploadImage->upload('image',$modelImage->id_category)) {
+            if ((!empty($uploadImage->image)) && $uploadImage->upload('image', $modelImage->id_category)) {
                 $modelImage->image_path = $uploadImage->image->name;
-                $modelImage->save();
-                Yii::$app->session->setFlash('success', 'Данные приняты'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
-                return $this->redirect(['/admin/image']);
             }
-            Yii::$app->session->setFlash('danger', 'Ошибка записи');
-            return $this->render('index', [
-                'modelImage' => $modelImage,
-                'searchModel' => $searchModel,
-                'dataProvider' => $searchModel->search([]),
-                'categoryList' => $categoryList,
-                'uploadImage' => $uploadImage,
-                'openForm' => true,
-                'categoryListForFilter' => $categoryListForFilter,
-            ]);
+            if ($modelImage->save()) {
+                Yii::$app->session->setFlash('success', 'Данные приняты'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
+                return $this->redirect(['/admin/category/update-category?id=' . $modelImage->id_category]);
+
+            } else {
+                Yii::$app->session->setFlash('danger', 'Ошибка записи');
+                return $this->render('index', [
+                    'modelImage' => $modelImage,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $searchModel->search([]),
+                    'categoryList' => $categoryList,
+                    'uploadImage' => $uploadImage,
+                    'openForm' => true,
+                    'categoryListForFilter' => $categoryListForFilter,
+                ]);
+            }
 
         } else {
-            if (!$category == null) {
-                $modelImage->id_category = $category;
+            if (!$categoryId == null) {
+                $modelImage->id_category = $categoryId;
             }
             return $this->render('create', [
                 'modelImage' => $modelImage,
@@ -136,7 +146,7 @@ class ImageController extends AppAdminController
      * Updates an existing images model.
      * @return mixed
      */
-    public function actionUpdate()
+    public function actionUpdateCategory()
     {
 
         $modelImage = new Image();
@@ -149,13 +159,16 @@ class ImageController extends AppAdminController
             if (($modelImage->id_category != $model->id_category)) {
                 $old_path = Yii::getAlias('@uploads') . '/images/' . $model->id_category . '/' . $model->image_path;
                 $new_path = Yii::getAlias('@uploads') . '/images/' . $modelImage->id_category . '/' . $model->image_path;
-
+                if (!file_exists(Yii::getAlias('@uploads') . '/images/' . $modelImage->id_category . '/')) {
+                    mkdir(Yii::getAlias('@uploads') . "/images/{$modelImage->id_category}", 0775, true);
+                }
                 if (rename($old_path, $new_path)) { // если перемещение прошло успешно, перезаписываем в базе
                     $model->id_category = $modelImage->id_category;
                     $model->update();
-                } else {
-                    $modelImage->addError('id_category', 'ошибка записи');
                 }
+//                else {
+//                    $modelImage->addError('id_category', 'ошибка записи');
+//                }
             }
         }
         // если был ajax запрос то возвращаем форму
@@ -181,7 +194,7 @@ class ImageController extends AppAdminController
         myDelete(Yii::getAlias('@uploads') . '/images/' . $item->id_category . '/' . $item->image_path); // удаляем изображение с сервера
         $item->delete();  // удаляем запись из базы данных
         Yii::$app->session->setFlash('success', 'Удаление прошло успешно'); // созданние одноразовых сообщений для пользователя(хранятся в сессии)
-        return $this->redirect(['/admin/image']);
+        return $this->redirect(Yii::$app->request->getReferrer());
     }
 
     /**
@@ -198,5 +211,42 @@ class ImageController extends AppAdminController
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionEditSlider()
+    {
+        if (Yii::$app->request->isAjax){
+            $modelImage = Image::findOne(Yii::$app->request->post('image_id'));
+            $column=Yii::$app->request->post('name');
+            $value=(Yii::$app->request->post('value')==1)? 0:1;
+            $modelImage->$column=$value;
+            if ($modelImage->update()){
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $data = ['value'=>$value,'status'=>true ];
+                return $data;
+            }
+        }
+        return false;
+    }
+
+    // обновляем name for slider
+    public function actionUpdateName()
+    {
+        $modelImage = new Image();
+
+        if (Yii::$app->request->isAjax && $modelImage->load(Yii::$app->request->post())) {
+            $model = Image::findOne($modelImage->id);
+
+            // обновляет категорию если она изменилась
+            if (($modelImage->name_for_slider != $model->name_for_slider)) {
+                $model->name_for_slider = $modelImage->name_for_slider;
+                $model->update();
+            }
+
+            return $this->renderPartial('_updateNameForm', [
+                'modelImage' => $model
+            ], false, true);
+        }
+        return false;
     }
 }

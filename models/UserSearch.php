@@ -37,7 +37,9 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find()->where('id != ' . Yii::$app->user->identity['id']);
+//        $query = User::find()->where('id != ' . Yii::$app->user->identity['id']);
+        $id =(int)  Yii::$app->user->identity['id'];
+        $query = User::find()->where("id != $id and id > 1");
 
         // add conditions that should always apply here
 

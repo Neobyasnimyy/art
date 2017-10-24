@@ -49,7 +49,7 @@ use kartik\file\FileInput;
     <?php echo $form->field($modelArticle, 'description')->widget(Widget::className(), [
         'settings' => [
             'lang' => 'ru',
-            'minHeight' => 200,
+            'minHeight' => 100,
             'imageUpload' => Url::to(['article/save-redactor-img']),
             'imageManagerJson' => Url::to(['article/images-get']),
             'plugins' => [

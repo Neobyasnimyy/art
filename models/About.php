@@ -28,7 +28,7 @@ class About extends \yii\db\ActiveRecord
     {
         return [
             [['text'], 'string'],
-            [['image'], 'string', 'max' => 255],
+            [['image_name'], 'string', 'max' => 255],
         ];
     }
 
@@ -39,8 +39,18 @@ class About extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'text' => 'Text',
-            'image' => 'Image',
+            'text' => 'Текст',
+            'image_name' => 'Фото',
         ];
+    }
+
+    public function getImage(){
+        $defaultImageUrl='/web/uploads/images/default.jpg';
+        $imageUrl = Yii::getAlias('@uploads').'/about/'.$this->image_name;
+        if (file_exists($imageUrl)&& is_file($imageUrl)) {
+            return '/web/uploads/about/'.$this->image_name;
+        } else {
+            return $defaultImageUrl;
+        }
     }
 }
